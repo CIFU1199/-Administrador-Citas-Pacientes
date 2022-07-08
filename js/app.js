@@ -12,7 +12,12 @@ const contenedorCitas = document.querySelector('#citas');
 
 class Citas{
     constructor(){
-        this.Citas =[];
+        this.citas =[];
+    }
+
+    agregarCita(cita){
+        this.citas =[...this.citas, cita];
+        console.log(this.citas)
     }
 }
 
@@ -40,6 +45,69 @@ class UI{
         setTimeout(() => {
             divMensaje.remove();
         }, 5000);
+    }
+    imprimirCitas({citas}){
+        this.limpiarHTML();
+
+        citas.forEach(cita => {
+            const {mascota, propietario , telefono, fecha, hora, sintomas , id} = cita;
+            const divCita= document.createElement('div');
+            divCita.classList.add('cita','p-3');
+            divCita.dataset.id = id;
+
+            //scripting de los elementos de la cita 
+            //mascotaParrafo
+            const mascotaParrafo = document.createElement('h2');
+            mascotaParrafo.classList.add('card-title', 'font-weight-bolder');
+            mascotaParrafo.textContent = mascota;
+
+            //propietarioParrafo
+            const propietarioParrafo = document.createElement('p');
+            propietarioParrafo.innerHTML = `
+            <span class="font-weigth-bolder">Propietario: </span> ${propietario}
+            `;
+            
+            //telefonoParrafo
+            const telefonoParrafo = document.createElement('p');
+            telefonoParrafo.innerHTML = `
+            <span class="font-weigth-bolder">Telefono: </span> ${telefono}
+            `;
+
+            //FechaParrafo
+            const FechaParrafo = document.createElement('p');
+            FechaParrafo.innerHTML = `
+            <span class="font-weigth-bolder">Fecha: </span> ${fecha}
+            `;
+
+            //HoraParrafo
+            const HoraParrafo = document.createElement('p');
+            HoraParrafo.innerHTML = `
+            <span class="font-weigth-bolder">Hora: </span> ${hora}
+            `;
+
+            //SintomasParrafo
+            const SintomasParrafo = document.createElement('p');
+            SintomasParrafo.innerHTML = `
+            <span class="font-weigth-bolder">Síntomas: </span> ${sintomas}
+            `;
+
+            //Agregar los parrafos al divCita
+            divCita.appendChild(mascotaParrafo);
+            divCita.appendChild(propietarioParrafo);
+            divCita.appendChild(telefonoParrafo);
+            divCita.appendChild(FechaParrafo);
+            divCita.appendChild(HoraParrafo);
+            divCita.appendChild(SintomasParrafo);
+
+            //agreagr las citas al html 
+            contenedorCitas.appendChild(divCita);
+
+        });
+    }
+    limpiarHTML(){
+        while (contenedorCitas.firstChild) {
+            contenedorCitas.removeChild(contenedorCitas.firstChild);
+        }
     }
 }
 
@@ -69,14 +137,14 @@ const citaObj={
     telefono: '',
     fecha:'',
     hora:'',
-    sintoma:''
+    sintomas:''
 }
 
 
 //agrega datos al objeto de la cita 
 function datosCita(e){
     citaObj[e.target.name]= e.target.value;
-    console.log(citaObj);
+    //console.log(citaObj);
 }
 
 
@@ -85,12 +153,37 @@ function nuevaCita(e){
     e.preventDefault();
 
     //Extraer la informacion del objeto cita 
-    const {mascota, propietario , telefono, fecha, hora, sintoma} = citaObj;
+    const {mascota, propietario , telefono, fecha, hora, sintomas} = citaObj;
 
     //validar 
-    if (mascota === '' || propietario === '' || telefono === '' || fecha === '' || hora === '' || sintoma === '' ){
+    if (mascota === '' || propietario === '' || telefono === '' || fecha === '' || hora === '' || sintomas === '' ){
         ui.imprimirAlerta('Todos los campos son obligatorios', 'error');
         return ;
     }
+    
+    //generar un id Unico
+    citaObj.id = Date.now();
 
+    //Creando una nueva cita 
+    administrarCitas.agregarCita({...citaObj});
+
+    //Reinicia el objeto para la validacion
+    reiniciarObjeto();
+
+    //reinicia el formulario
+    formulario.reset();
+
+
+    //mostar el html de las citas 
+    ui.imprimirCitas(administrarCitas);
+}
+
+
+function reiniciarObjeto(){
+    citaObj.mascota='';
+    citaObj.propietario='';
+    citaObj.telefono='';
+    citaObj.fecha='';
+    citaObj.hora='';
+    citaObj.sintomas='';
 }
