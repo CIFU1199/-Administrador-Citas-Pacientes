@@ -17,7 +17,11 @@ class Citas{
 
     agregarCita(cita){
         this.citas =[...this.citas, cita];
-        console.log(this.citas)
+        //console.log(this.citas)
+    }
+
+    eliminarCita(id){
+       this.citas = this.citas.filter( cita => cita.id !== id);
     }
 }
 
@@ -91,6 +95,13 @@ class UI{
             <span class="font-weigth-bolder">Síntomas: </span> ${sintomas}
             `;
 
+            //Boton Para elimina esta cita 
+            const btnEliminar = document.createElement('button');
+            btnEliminar.classList.add('btn','btn-danger','mr-2');
+            btnEliminar.innerHTML ='Eliminar <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+
+            btnEliminar.onclick = () => eliminarCita(id);
+
             //Agregar los parrafos al divCita
             divCita.appendChild(mascotaParrafo);
             divCita.appendChild(propietarioParrafo);
@@ -98,6 +109,7 @@ class UI{
             divCita.appendChild(FechaParrafo);
             divCita.appendChild(HoraParrafo);
             divCita.appendChild(SintomasParrafo);
+            divCita.appendChild(btnEliminar);
 
             //agreagr las citas al html 
             contenedorCitas.appendChild(divCita);
@@ -186,4 +198,17 @@ function reiniciarObjeto(){
     citaObj.fecha='';
     citaObj.hora='';
     citaObj.sintomas='';
+}
+
+function eliminarCita(id){
+   //eliminar la cita
+    administrarCitas.eliminarCita(id);
+   
+   //mostrar la cita 
+   ui.imprimirAlerta('La cita se eliminó Correctamente ');
+
+   //refrescar la cita  
+   ui.imprimirCitas(administrarCitas);
+
+
 }
